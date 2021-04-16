@@ -24,8 +24,11 @@ void process_image_callback(const sensor_msgs::Image img)
 
     int white_pixel = 255;
     float ang_z = 0.02;
+    float speed_factor = 1.0;
     float lin_x = 0.1;
     static int old_index = img.step/2;
+    int h_index = 0; 
+    int c_index = 0;
 
     // TODO: Loop through each pixel in the image and check if there's a bright white one
     // Then, identify if this pixel falls in the left, mid, or right side of the image
@@ -46,24 +49,42 @@ void process_image_callback(const sensor_msgs::Image img)
 
     if(ball_inside_image)
     {
-	index = index / img.height ;
+	    h_index = index / img.step ;
+        c_index = h_index * img.step;
+        index = index - c_index ;
         ROS_INFO("ball found in image index = %d old= %d",index, old_index);
         int move_left_right = 1;
         if(index < img.step/3)
         {
-            if(old_index>index)
-            	move_left_right = 1;
+            if(index < img.step/4)
+            {
+                speed_factor = 5;
+            }
             else
-                move_left_right = -1;
-            ang_z = move_left_right * ang_z;
+            {
+                speed_factor = 1;
+            }
+           // if(old_index>index)
+         //   	move_left_right =-1;
+          //  else
+                move_left_right = 1;
+            ang_z = move_left_right * ang_z* speed_factor;
         }
 	else if(index > img.step*2/3)
 	{
-	    if(old_index>index)
-            	move_left_right = 1;
+            if(index > img.step*3/4)
+            {
+                speed_factor = 5;
+            }
             else
-                move_left_right = -1;
-            ang_z = move_left_right * ang_z;
+            {
+                speed_factor = 1;
+            }
+	   // if(old_index>index)
+            	move_left_right = -1;
+           // else
+              //  move_left_right = 1;
+            ang_z = move_left_right * ang_z* speed_factor;
 	}
         else 
         {

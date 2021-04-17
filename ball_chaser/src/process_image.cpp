@@ -23,8 +23,9 @@ void process_image_callback(const sensor_msgs::Image img)
 {
 
     int white_pixel = 255;
-    float ang_z = 0.1;
+    float ang_z = 0.5;
     float speed_factor = 1.0;
+    float Lin_speed_factor = 1.0;
     float lin_x = 0.5;
     static int old_index = img.step/2;
     int h_index = 0; 
@@ -90,9 +91,10 @@ void process_image_callback(const sensor_msgs::Image img)
         {
             move_left_right = 0;
             ang_z = move_left_right * ang_z;
+            Lin_speed_factor = 5;
         }
         old_index = index;
-        drive_robot(lin_x*speed_factor,ang_z);
+        drive_robot(lin_x*Lin_speed_factor,ang_z);
     }
     else
     {

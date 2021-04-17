@@ -23,9 +23,9 @@ void process_image_callback(const sensor_msgs::Image img)
 {
 
     int white_pixel = 255;
-    float ang_z = 0.02;
+    float ang_z = 0.1;
     float speed_factor = 1.0;
-    float lin_x = 0.1;
+    float lin_x = 0.5;
     static int old_index = img.step/2;
     int h_index = 0; 
     int c_index = 0;
@@ -39,8 +39,8 @@ void process_image_callback(const sensor_msgs::Image img)
     
 
     // Loop through each pixel in the image and check if its equal to the first one
-    for (int i = 0; i < img.height * img.step; i++) {
-        if (img.data[i] == white_pixel) {
+    for (int i = 0; (i < img.height * img.step) && (i+2 < img.height * img.step); i+=1) {
+        if (img.data[i] == white_pixel && (img.data[i+1] == white_pixel) &&img.data[i+2] == white_pixel) {
             ball_inside_image = true; 
             index = i;
             break;
@@ -92,7 +92,7 @@ void process_image_callback(const sensor_msgs::Image img)
             ang_z = move_left_right * ang_z;
         }
         old_index = index;
-        drive_robot(lin_x,ang_z);
+        drive_robot(lin_x*speed_factor,ang_z);
     }
     else
     {

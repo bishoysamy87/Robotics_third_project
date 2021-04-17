@@ -42,8 +42,6 @@ bool handle_drive_request(ball_chaser::DriveToTarget::Request& req,
 	// Publish angles to drive the robot
     motor_command_publisher.publish(motor_command);
 
-    // Wait 3 seconds for arm to settle
-    ros::Duration(3).sleep();
 
     // Return a response message
     res.msg_feedback = "Set wheel velocities - linear x: " + std::to_string(joints_angles[0]) + " , angular z: " + std::to_string(joints_angles[1]);
